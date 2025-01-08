@@ -1,0 +1,13 @@
+STU-543,Car,Honda Civic,7000
+VWX-876,Bike,Harley Davidson,4000
+YZA-135,Truck,Volvo FH,12000
+BCD-246,Car,Ford Mustang,9000
+EFG-369,Bike,Suzuki GSX-R,3000
+HIJ-741,Truck,Scania R-Series,11000
+NOP-963,Bike,Yamaha FZ,2500
+QRS-258,Truck,Mercedes Actros,13000
+TUV-147,Car,Chevrolet Camaro,8500
+WXY-357,Bike,Kawasaki Ninja,3500
+ZAB-468,Truck,MAN TGX,14000
+KWL-905,Bike,CD 70,1200
+QRS-258,Toyota,Elan,12000
