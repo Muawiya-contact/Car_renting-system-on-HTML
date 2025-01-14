@@ -8,6 +8,12 @@ const vehicles = [
 let totalEarnings = 0;
 let pin = "1234";
 
+// Utility function to go back to the main menu
+function backToMenu() {
+  document.querySelectorAll("main > div").forEach((div) => div.classList.add("hidden"));
+  document.getElementById("main-menu").classList.remove("hidden");
+}
+
 // List available vehicles
 function listAvailableVehicles() {
   document.getElementById("main-menu").classList.add("hidden");
@@ -19,91 +25,72 @@ function listAvailableVehicles() {
     const status = v.rented ? "(Rented)" : "(Available)";
     vehicleContainer.innerHTML += `
       <div class="vehicle">
-        <span>${v.reg} - ${v.type} (${v.brand})</span> - ${v.price} PKR/day ${status}
-        <button class="copy-btn" onclick="copyReg('${v.reg}')">Copy Reg</button>
-        <div class="copy-msg" id="msg-${v.reg}">Copied!</div>
+        <strong>${v.reg}</strong> - ${v.type} (${v.brand}) - ${v.price} PKR/day ${status}
       </div>
     `;
   });
 }
 
-// Copy registration number
-function copyReg(reg) {
-  const regField = document.createElement("textarea");
-  regField.value = reg;
-  document.body.appendChild(regField);
-  regField.select();
-  document.execCommand("copy");
-  document.body.removeChild(regField);
+// Rent a vehicle
+function rentVehicle(event) {
+  event.preventDefault();
 
-  const msg = document.getElementById(`msg-${reg}`);
-  msg.style.display = 'block';
-  setTimeout(() => msg.style.display = 'none', 1500);
-}
+  const regNumber = document.getElementById("reg-number").value.trim();
+  const name = document.getElementById("name").value.trim();
+  const birthdate = document.getElementById("birthdate").value.trim();
 
-// Show rent form
-function showRentForm() {
-  document.getElementById("main-menu").classList.add("hidden");
-  document.getElementById("rent-form").classList.remove("hidden");
+  const vehicle = vehicles.find((v) => v.reg === regNumber && !v.rented);
 
-  const vehicleSelect = document.getElementById("vehicle-select");
-  vehicleSelect.innerHTML = "";
-  vehicles.forEach((v) => {
-    if (!v.rented) {
-      vehicleSelect.innerHTML += `<option value="${v.reg}">${v.reg} - ${v.type} (${v.brand})</option>`;
-    }
-  });
-}
-
-// Rent vehicle
-function rentVehicle() {
-  const selectedReg = document.getElementById("vehicle-select").value;
-  const rentDays = document.getElementById("rent-days").value;
-
-  const vehicle = vehicles.find((v) => v.reg === selectedReg);
-  if (vehicle && rentDays > 0) {
+  if (vehicle) {
     vehicle.rented = true;
-    const rentCost = vehicle.price * rentDays;
+    const rentCost = vehicle.price;
     totalEarnings += rentCost;
 
-    alert(`You have rented the ${vehicle.type} (${vehicle.brand}) for ${rentDays} days. Total cost: ${rentCost} PKR.`);
-    document.getElementById("rent-form").classList.add("hidden");
-    document.getElementById("main-menu").classList.remove("hidden");
+    alert(`Vehicle rented successfully!\n\nName: ${name}\nVehicle: ${vehicle.type} (${vehicle.brand})\nRegistration: ${vehicle.reg}\nDaily Rent: ${rentCost} PKR.`);
+    backToMenu();
   } else {
-    alert("Invalid input. Please try again.");
+    alert("Invalid registration number or vehicle is already rented.");
   }
 }
 
-// Show return form
-function showReturnForm() {
-  document.getElementById("main-menu").classList.add("hidden");
-  document.getElementById("return-form").classList.remove("hidden");
+// Return a vehicle
+function returnVehicle(event) {
+  event.preventDefault();
 
-  const returnSelect = document.getElementById("return-select");
-  returnSelect.innerHTML = "";
-  vehicles.forEach((v) => {
-    if (v.rented) {
-      returnSelect.innerHTML += `<option value="${v.reg}">${v.reg} - ${v.type} (${v.brand})</option>`;
-    }
-  });
-}
+  const regNumber = document.getElementById("return-reg-number").value.trim();
+  const vehicle = vehicles.find((v) => v.reg === regNumber && v.rented);
 
-// Return vehicle
-function returnVehicle() {
-  const selectedReg = document.getElementById("return-select").value;
-
-  const vehicle = vehicles.find((v) => v.reg === selectedReg);
   if (vehicle) {
     vehicle.rented = false;
-    alert(`You have successfully returned the ${vehicle.type} (${vehicle.brand}).`);
-    document.getElementById("return-form").classList.add("hidden");
-    document.getElementById("main-menu").classList.remove("hidden");
+    alert(`Vehicle returned successfully!\n\nVehicle: ${vehicle.type} (${vehicle.brand})\nRegistration: ${vehicle.reg}`);
+    backToMenu();
   } else {
-    alert("Invalid input. Please try again.");
+    alert("Invalid registration number or vehicle is not currently rented.");
   }
 }
 
-// View earnings
-function viewEarnings() {
-  alert(`Total earnings: ${totalEarnings} PKR.`);
+// Calculate total earnings
+function calculateEarnings() {
+  alert(`Total earnings from rentals: ${totalEarnings} PKR.`);
+}
+
+// Change PIN
+function showPinForm() {
+  document.getElementById("main-menu").classList.add("hidden");
+  document.getElementById("pin-form").classList.remove("hidden");
+}
+
+function changePin(event) {
+  event.preventDefault();
+
+  const currentPin = document.getElementById("current-pin").value.trim();
+  const newPin = document.getElementById("new-pin").value.trim();
+
+  if (currentPin === pin) {
+    pin = newPin;
+    alert("Pin changed successfully!");
+    backToMenu();
+  } else {
+    alert("Incorrect current pin.");
+  }
 }
