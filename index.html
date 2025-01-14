@@ -4,7 +4,172 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vehicle Rental System</title>
-  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f4f7fa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    header {
+      background-color: #003366;
+      color: white;
+      padding: 20px;
+      width: 100%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px 8px 0 0;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+
+    main {
+      background-color: white;
+      padding: 40px;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 1000px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .button {
+      background-color: #0044cc;
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin: 10px 0;
+      text-decoration: none;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: #0033a1;
+    }
+
+    .button:focus {
+      outline: none;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .vehicle {
+      background-color: #fafafa;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.1rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .vehicle span {
+      font-weight: bold;
+      color: #333;
+    }
+
+    .vehicle button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .vehicle button:hover {
+      background-color: #218838;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    input[type="text"]:focus, input[type="password"]:focus {
+      border-color: #0044cc;
+      outline: none;
+    }
+
+    form {
+      text-align: left;
+      margin-top: 30px;
+    }
+
+    button[type="submit"] {
+      padding: 12px 20px;
+      background-color: #0044cc;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.1rem;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #0033a1;
+    }
+
+    .back-btn {
+      background-color: #6c757d;
+      margin-top: 15px;
+    }
+
+    .back-btn:hover {
+      background-color: #5a6268;
+    }
+
+    .copy-btn {
+      background-color: #28a745;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-left: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    .copy-btn:hover {
+      background-color: #218838;
+    }
+
+    .copy-msg {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #28a745;
+      display: none;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -62,6 +227,121 @@
     </div>
   </main>
 
-  <script src="script.js"></script>
+  <script>
+    const vehicles = [
+      { reg: "STU-543", type: "Car", brand: "Honda Civic", price: 7000, rented: false },
+      { reg: "VWX-876", type: "Bike", brand: "Harley Davidson", price: 4000, rented: false },
+      { reg: "YZA-135", type: "Truck", brand: "Volvo FH", price: 12000, rented: false },
+    ];
+
+    let totalEarnings = 0;
+    let pin = "1234";
+
+    function listAvailableVehicles() {
+      document.getElementById("main-menu").classList.add("hidden");
+      document.getElementById("vehicle-list").classList.remove("hidden");
+
+      const vehicleContainer = document.getElementById("vehicles");
+      vehicleContainer.innerHTML = "";
+      vehicles.forEach((v) => {
+        const status = v.rented ? "(Rented)" : "(Available)";
+        vehicleContainer.innerHTML += `
+          <div class="vehicle">
+            <span>${v.reg} - ${v.type} (${v.brand})</span> - ${v.price} PKR/day ${status}
+            <button class="copy-btn" onclick="copyReg('${v.reg}')">Copy Reg</button>
+            <div class="copy-msg" id="msg-${v.reg}">Copied!</div>
+          </div>
+        `;
+      });
+    }
+
+    function copyReg(reg) {
+      const regField = document.createElement("textarea");
+      regField.value = reg;
+      document.body.appendChild(regField);
+      regField.select();
+      document.execCommand("copy");
+      document.body.removeChild(regField);
+
+      const msg = document.getElementById(`msg-${reg}`);
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 1500);
+    }
+
+    function showRentForm() {
+      document.getElementById("main-menu").classList.add("hidden");
+      document.getElementById("rent-form").classList.remove("hidden");
+    }
+
+    function rentVehicle(event) {
+      event.preventDefault();
+      const reg = document.getElementById("reg-number").value.toUpperCase();
+      const name = document.getElementById("name").value;
+      const birthdate = document.getElementById("birthdate").value;
+
+      const vehicle = vehicles.find((v) => v.reg === reg);
+      if (!vehicle || vehicle.rented) {
+        alert("❌ Vehicle not available!");
+        return;
+      }
+
+      vehicle.rented = true;
+      totalEarnings += vehicle.price;
+      alert(`🎉 ${name}, you successfully rented ${vehicle.brand} (${vehicle.reg})!`);
+      backToMenu();
+    }
+
+    function showReturnForm() {
+      document.getElementById("main-menu").classList.add("hidden");
+      document.getElementById("return-form").classList.remove("hidden");
+    }
+
+    function returnVehicle(event) {
+      event.preventDefault();
+      const reg = document.getElementById("return-reg-number").value.toUpperCase();
+      const vehicle = vehicles.find((v) => v.reg === reg);
+
+      if (!vehicle || !vehicle.rented) {
+        alert("❌ This vehicle was not rented.");
+        return;
+      }
+
+      vehicle.rented = false;
+      alert(`🎉 ${vehicle.brand} (${vehicle.reg}) successfully returned!`);
+      backToMenu();
+    }
+
+    function calculateEarnings() {
+      alert(`💰 Total Earnings: ${totalEarnings} PKR`);
+    }
+
+    function showPinForm() {
+      document.getElementById("main-menu").classList.add("hidden");
+      document.getElementById("pin-form").classList.remove("hidden");
+    }
+
+    function changePin(event) {
+      event.preventDefault();
+      const currentPin = document.getElementById("current-pin").value;
+      const newPin = document.getElementById("new-pin").value;
+
+      if (currentPin !== pin) {
+        alert("❌ Incorrect current pin!");
+        return;
+      }
+
+      pin = newPin;
+      alert("🎉 Pin successfully changed!");
+      backToMenu();
+    }
+
+    function backToMenu() {
+      document.getElementById("main-menu").classList.remove("hidden");
+      document.getElementById("vehicle-list").classList.add("hidden");
+      document.getElementById("rent-form").classList.add("hidden");
+      document.getElementById("return-form").classList.add("hidden");
+      document.getElementById("pin-form").classList.add("hidden");
+    }
+  </script>
 </body>
 </html>
