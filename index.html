@@ -93,9 +93,19 @@
       <button class="button" onclick="returnVehicle()">Submit</button>
       <button class="button" onclick="showSection('main-menu')">Back</button>
     </div>
+    <div id="admin-dashboard" class="hidden">
+      <h2>Admin Dashboard</h2>
+      <input type="password" id="admin-pin" class="input-field" placeholder="Enter Admin PIN">
+      <button class="button" onclick="viewEarnings()">View Earnings</button>
+      <button class="button" onclick="changePin()">Change PIN</button>
+      <p id="earnings-display"></p>
+      <button class="button" onclick="showSection('main-menu')">Back</button>
+    </div>
   </main>
   <script>
     let vehicles = [];
+    let earnings = 0;
+    let pinCode = "1234";
     
     async function loadVehicles() {
       try {
@@ -118,6 +128,23 @@
           </div>
         `;
       });
+    }
+    
+    function viewEarnings() {
+      const pin = document.getElementById("admin-pin").value;
+      if (pin === pinCode) {
+        document.getElementById("earnings-display").innerText = `Total Earnings: ${earnings} PKR`;
+      } else {
+        alert("Incorrect PIN.");
+      }
+    }
+    
+    function changePin() {
+      const newPin = prompt("Enter new PIN:");
+      if (newPin) {
+        pinCode = newPin;
+        alert("PIN changed successfully!");
+      }
     }
     
     function showSection(id) {
