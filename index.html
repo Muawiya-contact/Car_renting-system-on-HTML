@@ -19,19 +19,19 @@
     main {
       background: white;
       padding: 40px;
-      border-radius: 8px;
+      border-radius: 10px;
       width: 100%;
-      max-width: 600px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       text-align: center;
     }
     .button {
       display: block;
-      background: #0044cc;
+      background: #007bff;
       color: white;
       padding: 12px;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       font-size: 1rem;
       margin: 10px 0;
       text-decoration: none;
@@ -39,15 +39,29 @@
       transition: 0.3s;
       cursor: pointer;
     }
-    .button:hover { background: #0033a1; }
+    .button:hover { background: #0056b3; }
     .hidden { display: none; }
     .input-field {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
-      border-radius: 5px;
+      border-radius: 6px;
       border: 1px solid #ccc;
       font-size: 1rem;
+    }
+    .vehicle-list {
+      text-align: left;
+      margin-top: 20px;
+    }
+    .vehicle {
+      background: #f9f9f9;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 5px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #ddd;
     }
   </style>
 </head>
@@ -55,9 +69,15 @@
   <main>
     <h1>Vehicle Rental System</h1>
     <div id="main-menu">
+      <button class="button" onclick="showSection('vehicle-list')">View Vehicles</button>
       <button class="button" onclick="showSection('rent-form')">Rent a Vehicle</button>
       <button class="button" onclick="showSection('return-form')">Return a Vehicle</button>
       <button class="button" onclick="showSection('admin-dashboard')">Admin Dashboard</button>
+    </div>
+    <div id="vehicle-list" class="hidden">
+      <h2>Available Vehicles</h2>
+      <div id="vehicles" class="vehicle-list"></div>
+      <button class="button" onclick="showSection('main-menu')">Back</button>
     </div>
     <div id="rent-form" class="hidden">
       <h2>Rent a Vehicle</h2>
@@ -73,86 +93,39 @@
       <button class="button" onclick="returnVehicle()">Submit</button>
       <button class="button" onclick="showSection('main-menu')">Back</button>
     </div>
-    <div id="admin-dashboard" class="hidden">
-      <h2>Admin Dashboard</h2>
-      <p>Manage vehicle rentals and earnings.</p>
-      <input type="password" id="admin-pin" class="input-field" placeholder="Enter PIN">
-      <button class="button" onclick="viewEarnings()">View Earnings</button>
-      <button class="button" onclick="changePin()">Change PIN</button>
-      <button class="button" onclick="showSection('main-menu')">Back</button>
-    </div>
   </main>
   <script>
     let vehicles = [];
-    let pinCode = "1234";
-    let earnings = 0;
     
     async function loadVehicles() {
-      const response = await fetch('vehicles.json');
-      vehicles = await response.json();
+      try {
+        const response = await fetch('vehicles.json');
+        vehicles = await response.json();
+        displayVehicles();
+      } catch (error) {
+        console.error("Error loading vehicle data:", error);
+      }
     }
-    window.onload = loadVehicles;
+    
+    function displayVehicles() {
+      const vehicleContainer = document.getElementById("vehicles");
+      vehicleContainer.innerHTML = "";
+      vehicles.forEach(vehicle => {
+        vehicleContainer.innerHTML += `
+          <div class="vehicle">
+            <span>${vehicle.reg} - ${vehicle.type} (${vehicle.brand}) - ${vehicle.price} PKR/day</span>
+            <span>${vehicle.rented ? "Rented" : "Available"}</span>
+          </div>
+        `;
+      });
+    }
     
     function showSection(id) {
       document.querySelectorAll('main > div').forEach(div => div.classList.add('hidden'));
       document.getElementById(id).classList.remove('hidden');
     }
     
-    function rentVehicle() {
-      const reg = document.getElementById("reg-number").value.toUpperCase();
-      const name = document.getElementById("name").value;
-      const birthdate = document.getElementById("birthdate").value;
-      
-      if (!name || !birthdate) {
-        alert("Please fill in all fields.");
-        return;
-      }
-      
-      const age = new Date().getFullYear() - new Date(birthdate).getFullYear();
-      if (age < 18) {
-        alert("You must be at least 18 years old to rent a vehicle.");
-        return;
-      }
-      
-      const vehicle = vehicles.find(v => v.reg === reg);
-      if (vehicle && !vehicle.rented) {
-        vehicle.rented = true;
-        earnings += 1000;
-        alert(`✅ Vehicle ${reg} rented successfully!`);
-        showSection('main-menu');
-      } else {
-        alert("❌ Vehicle not available.");
-      }
-    }
-    
-    function returnVehicle() {
-      const reg = document.getElementById("return-reg-number").value.toUpperCase();
-      const vehicle = vehicles.find(v => v.reg === reg);
-      if (vehicle && vehicle.rented) {
-        vehicle.rented = false;
-        alert(`✅ Vehicle ${reg} returned successfully!`);
-        showSection('main-menu');
-      } else {
-        alert("❌ Vehicle not rented.");
-      }
-    }
-    
-    function viewEarnings() {
-      const pin = document.getElementById("admin-pin").value;
-      if (pin === pinCode) {
-        alert(`💰 Total Earnings: ${earnings} PKR`);
-      } else {
-        alert("Incorrect PIN.");
-      }
-    }
-    
-    function changePin() {
-      const pin = prompt("Enter new PIN:");
-      if (pin) {
-        pinCode = pin;
-        alert("PIN changed successfully!");
-      }
-    }
+    window.onload = loadVehicles;
   </script>
 </body>
 </html>
