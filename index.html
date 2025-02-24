@@ -1,181 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vehicle Rental System</title>
   <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
   <style>
+    /* === Global Styles === */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: 'Roboto', sans-serif;
       background-color: #f4f7fa;
-      margin: 0;
-      padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
+      flex-direction: column;
+      padding: 20px;
     }
 
+    /* === Header Section === */
     header {
-      background-color: #003366;
+      background: linear-gradient(135deg, #002a80, #0044cc);
       color: white;
       padding: 20px;
       width: 100%;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      border-radius: 8px 8px 0 0;
       text-align: center;
+      border-radius: 8px 8px 0 0;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
 
     h1 {
       margin: 0;
-      font-size: 2.5rem;
+      font-size: 2.4rem;
+      font-weight: bold;
+      text-transform: uppercase;
     }
 
-    main {
-      background-color: white;
-      padding: 40px;
+    /* === Main Content === */
+    main, .hidden-section {
+      background: white;
+      padding: 35px;
       border-radius: 8px;
       width: 100%;
-      max-width: 1000px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .button {
-      background-color: #0044cc;
-      color: white;
-      padding: 15px 30px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1rem;
-      margin: 10px 0;
-      text-decoration: none;
-      width: 100%;
+      max-width: 900px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
       transition: all 0.3s ease;
-    }
-
-    .button:hover {
-      background-color: #0033a1;
-    }
-
-    .button:focus {
-      outline: none;
     }
 
     .hidden {
       display: none;
     }
 
-    .section-title {
-      font-size: 1.75rem;
-      margin-bottom: 20px;
-      color: #333;
+    /* === Buttons === */
+    .button, .copy-btn, .rent-btn, .return-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #0044cc, #002a80);
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      width: 90%;
+      margin: 10px auto;
+      transition: all 0.3s ease-in-out;
+      text-transform: uppercase;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
+    .button:hover, .copy-btn:hover, .rent-btn:hover, .return-btn:hover {
+      background: linear-gradient(135deg, #0033a1, #001f66);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 51, 160, 0.3);
+    }
+
+    /* === Vehicle Cards === */
     .vehicle {
-      background-color: #fafafa;
-      padding: 20px;
-      margin: 15px 0;
+      background: #fafafa;
+      padding: 18px;
+      margin: 12px 0;
       border-radius: 8px;
       border: 1px solid #ddd;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-size: 1.1rem;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+      transition: all 0.3s ease-in-out;
     }
 
-    .vehicle span {
-      font-weight: bold;
-      color: #333;
+    .vehicle:hover {
+      transform: scale(1.02);
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
     }
 
-    .vehicle button {
-      background-color: #28a745;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
+    /* === Modal Styles === */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
     }
 
-    .vehicle button:hover {
-      background-color: #218838;
+    .modal-content {
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
     }
 
-    input[type="text"], input[type="password"] {
+    .modal input {
       width: 100%;
       padding: 12px;
-      margin: 8px 0;
+      margin: 12px 0;
+      border: 1px solid #ddd;
       border-radius: 5px;
-      border: 1px solid #ccc;
       font-size: 1rem;
     }
 
-    input[type="text"]:focus, input[type="password"]:focus {
-      border-color: #0044cc;
-      outline: none;
+    .modal-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
     }
 
-    form {
-      text-align: left;
-      margin-top: 30px;
+    .modal-buttons button {
+      flex: 1;
     }
 
-    button[type="submit"] {
-      padding: 12px 20px;
-      background-color: #0044cc;
+    /* === Toast Notification === */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #28a745;
       color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 1.1rem;
-      width: 100%;
-      cursor: pointer;
-    }
-
-    button[type="submit"]:hover {
-      background-color: #0033a1;
-    }
-
-    .back-btn {
-      background-color: #6c757d;
-      margin-top: 15px;
-    }
-
-    .back-btn:hover {
-      background-color: #5a6268;
-    }
-
-    .copy-btn {
-      background-color: #28a745;
-      color: white;
-      padding: 8px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1rem;
-      margin-left: 10px;
-      transition: background-color 0.3s ease;
-    }
-
-    .copy-btn:hover {
-      background-color: #218838;
-    }
-
-    .copy-msg {
-      margin-top: 10px;
-      font-size: 0.9rem;
-      color: #28a745;
+      padding: 12px 25px;
+      border-radius: 6px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       display: none;
+    }
+
+    .toast.error {
+      background: #dc3545;
     }
   </style>
 </head>
 <body>
   <header>
-@@ -62,6 +227,121 @@ <h2 class="section-title">Change Pin</h2>
-    </div>
+    <h1>Vehicle Rental System</h1>
+  </header>
+
+  <main id="main-menu">
+    <button class="button" onclick="listAvailableVehicles()">View Available Vehicles</button>
+    <button class="button" onclick="showRentForm()">Rent a Vehicle</button>
+    <button class="button" onclick="showReturnForm()">Return a Vehicle</button>
+    <button class="button" onclick="enterPin()">View Earnings</button>
+    <button class="button" onclick="changePin()">Change Pin</button>
   </main>
 
-  <script src="script.js"></script>
+  <div id="vehicle-list" class="hidden-section">
+    <h2>Available Vehicles</h2>
+    <div id="vehicles"></div>
+    <button class="button" onclick="backToMenu()">Back</button>
+  </div>
+
+  <!-- Rent Modal -->
+  <div id="rent-modal" class="modal">
+    <div class="modal-content">
+      <h2>Rent a Vehicle</h2>
+      <input type="text" id="rent-reg" placeholder="Enter vehicle registration number">
+      <div class="modal-buttons">
+        <button class="button" onclick="confirmRent()">Rent</button>
+        <button class="button" onclick="closeModal('rent-modal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Return Modal -->
+  <div id="return-modal" class="modal">
+    <div class="modal-content">
+      <h2>Return a Vehicle</h2>
+      <input type="text" id="return-reg" placeholder="Enter vehicle registration number">
+      <div class="modal-buttons">
+        <button class="button" onclick="confirmReturn()">Return</button>
+        <button class="button" onclick="closeModal('return-modal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Earnings Modal -->
+  <div id="earnings-modal" class="modal">
+    <div class="modal-content">
+      <h2>Total Earnings</h2>
+      <p id="earnings-amount"></p>
+      <button class="button" onclick="closeModal('earnings-modal')">Close</button>
+    </div>
+  </div>
+
+  <!-- Change Pin Modal -->
+  <div id="change-pin-modal" class="modal">
+    <div class="modal-content">
+      <h2>Change Pin</h2>
+      <input type="password" id="old-pin" placeholder="Enter old pin">
+      <input type="password" id="new-pin" placeholder="Enter new pin">
+      <div class="modal-buttons">
+        <button class="button" onclick="confirmChangePin()">Change</button>
+        <button class="button" onclick="closeModal('change-pin-modal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
   <script>
     const vehicles = [
       { reg: "STU-543", type: "Car", brand: "Honda Civic", price: 7000, rented: false },
@@ -186,110 +243,118 @@
     let totalEarnings = 0;
     let pin = "1234";
 
+    // Show Rent Modal
+    function showRentForm() {
+      document.getElementById("rent-reg").value = "";
+      document.getElementById("rent-modal").style.display = "flex";
+    }
+
+    // Show Return Modal
+    function showReturnForm() {
+      document.getElementById("return-reg").value = "";
+      document.getElementById("return-modal").style.display = "flex";
+    }
+
+    // Close Modal
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = "none";
+    }
+
+    // Confirm Rent
+    function confirmRent() {
+      const regNumber = document.getElementById("rent-reg").value.trim();
+      const vehicle = vehicles.find(v => v.reg === regNumber);
+
+      if (vehicle && !vehicle.rented) {
+        vehicle.rented = true;
+        totalEarnings += vehicle.price;
+        showToast(`You rented ${vehicle.brand} for ${vehicle.price} PKR/day.`);
+        closeModal("rent-modal");
+        listAvailableVehicles(); // Refresh the vehicle list
+      } else {
+        showToast("Invalid registration number or vehicle already rented!", true);
+      }
+    }
+
+    // Confirm Return
+    function confirmReturn() {
+      const regNumber = document.getElementById("return-reg").value.trim();
+      const vehicle = vehicles.find(v => v.reg === regNumber);
+
+      if (vehicle && vehicle.rented) {
+        vehicle.rented = false;
+        showToast(`You returned ${vehicle.brand}.`);
+        closeModal("return-modal");
+        listAvailableVehicles(); // Refresh the vehicle list
+      } else {
+        showToast("Invalid registration number or vehicle was not rented!", true);
+      }
+    }
+
+    // Show Toast Notification
+    function showToast(message, isError = false) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.className = isError ? "toast error" : "toast";
+      toast.style.display = "block";
+      setTimeout(() => (toast.style.display = "none"), 3000);
+    }
+
+    // List Available Vehicles
     function listAvailableVehicles() {
+      const vehicleList = document.getElementById("vehicles");
+      vehicleList.innerHTML = "";
+      vehicles.forEach(vehicle => {
+        if (!vehicle.rented) {
+          const vehicleDiv = document.createElement("div");
+          vehicleDiv.className = "vehicle";
+          vehicleDiv.innerHTML = `
+            <span>${vehicle.brand} (${vehicle.reg})</span>
+            <span>${vehicle.price} PKR/day</span>
+          `;
+          vehicleList.appendChild(vehicleDiv);
+        }
+      });
       document.getElementById("main-menu").classList.add("hidden");
       document.getElementById("vehicle-list").classList.remove("hidden");
-
-      const vehicleContainer = document.getElementById("vehicles");
-      vehicleContainer.innerHTML = "";
-      vehicles.forEach((v) => {
-        const status = v.rented ? "(Rented)" : "(Available)";
-        vehicleContainer.innerHTML += `
-          <div class="vehicle">
-            <span>${v.reg} - ${v.type} (${v.brand})</span> - ${v.price} PKR/day ${status}
-            <button class="copy-btn" onclick="copyReg('${v.reg}')">Copy Reg</button>
-            <div class="copy-msg" id="msg-${v.reg}">Copied!</div>
-          </div>
-        `;
-      });
     }
 
-    function copyReg(reg) {
-      const regField = document.createElement("textarea");
-      regField.value = reg;
-      document.body.appendChild(regField);
-      regField.select();
-      document.execCommand("copy");
-      document.body.removeChild(regField);
-
-      const msg = document.getElementById(`msg-${reg}`);
-      msg.style.display = 'block';
-      setTimeout(() => msg.style.display = 'none', 1500);
-    }
-
-    function showRentForm() {
-      document.getElementById("main-menu").classList.add("hidden");
-      document.getElementById("rent-form").classList.remove("hidden");
-    }
-
-    function rentVehicle(event) {
-      event.preventDefault();
-      const reg = document.getElementById("reg-number").value.toUpperCase();
-      const name = document.getElementById("name").value;
-      const birthdate = document.getElementById("birthdate").value;
-
-      const vehicle = vehicles.find((v) => v.reg === reg);
-      if (!vehicle || vehicle.rented) {
-        alert("❌ Vehicle not available!");
-        return;
-      }
-
-      vehicle.rented = true;
-      totalEarnings += vehicle.price;
-      alert(`🎉 ${name}, you successfully rented ${vehicle.brand} (${vehicle.reg})!`);
-      backToMenu();
-    }
-
-    function showReturnForm() {
-      document.getElementById("main-menu").classList.add("hidden");
-      document.getElementById("return-form").classList.remove("hidden");
-    }
-
-    function returnVehicle(event) {
-      event.preventDefault();
-      const reg = document.getElementById("return-reg-number").value.toUpperCase();
-      const vehicle = vehicles.find((v) => v.reg === reg);
-
-      if (!vehicle || !vehicle.rented) {
-        alert("❌ This vehicle was not rented.");
-        return;
-      }
-
-      vehicle.rented = false;
-      alert(`🎉 ${vehicle.brand} (${vehicle.reg}) successfully returned!`);
-      backToMenu();
-    }
-
-    function calculateEarnings() {
-      alert(`💰 Total Earnings: ${totalEarnings} PKR`);
-    }
-
-    function showPinForm() {
-      document.getElementById("main-menu").classList.add("hidden");
-      document.getElementById("pin-form").classList.remove("hidden");
-    }
-
-    function changePin(event) {
-      event.preventDefault();
-      const currentPin = document.getElementById("current-pin").value;
-      const newPin = document.getElementById("new-pin").value;
-
-      if (currentPin !== pin) {
-        alert("❌ Incorrect current pin!");
-        return;
-      }
-
-      pin = newPin;
-      alert("🎉 Pin successfully changed!");
-      backToMenu();
-    }
-
+    // Back to Main Menu
     function backToMenu() {
       document.getElementById("main-menu").classList.remove("hidden");
       document.getElementById("vehicle-list").classList.add("hidden");
-      document.getElementById("rent-form").classList.add("hidden");
-      document.getElementById("return-form").classList.add("hidden");
-      document.getElementById("pin-form").classList.add("hidden");
+    }
+
+    // Enter Pin to View Earnings
+    function enterPin() {
+      const enteredPin = prompt("Enter your pin:");
+      if (enteredPin === pin) {
+        document.getElementById("earnings-amount").textContent = `Total Earnings: ${totalEarnings} PKR`;
+        document.getElementById("earnings-modal").style.display = "flex";
+      } else {
+        showToast("Incorrect pin!", true);
+      }
+    }
+
+    // Change Pin
+    function changePin() {
+      document.getElementById("old-pin").value = "";
+      document.getElementById("new-pin").value = "";
+      document.getElementById("change-pin-modal").style.display = "flex";
+    }
+
+    // Confirm Change Pin
+    function confirmChangePin() {
+      const oldPin = document.getElementById("old-pin").value;
+      const newPin = document.getElementById("new-pin").value;
+
+      if (oldPin === pin) {
+        pin = newPin;
+        showToast("Pin changed successfully!");
+        closeModal("change-pin-modal");
+      } else {
+        showToast("Incorrect old pin!", true);
+      }
     }
   </script>
 </body>
